@@ -83,7 +83,7 @@
 
 ## External Links
 
-- [Spesifikasi](https://github.com/NoHaitch/Tubes2_BE_Chibye/blob/main/doc/Spesifikasi%20Tugas%20Besar%202%20Stima%202023_2024.docx.pdf)
+- [Spesifikasi](https://docs.google.com/document/d/1h6WY_NxfCBPrKkS84Crm2qAhrRA8DatL/edit)
 - [QNA](https://docs.google.com/spreadsheets/d/1egeULRNv3ZrCrRexrbi7G4GkKwi_9KGasFIPAnhODfw/edit#gid=982607851)
 - [Teams](https://docs.google.com/spreadsheets/d/14wDe_K5LjHpsEnQSoLrB4mNf98zTTP-0xWkXqoWDOMw/edit#gid=0)
 
