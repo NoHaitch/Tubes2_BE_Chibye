@@ -10,9 +10,10 @@ import (
 	"github.com/gocolly/colly"
 )
 
+/* ASUMSI pageTitle sudah benar tanpa spaci */
 func scrapeWikipediaLinksGoquery(pageTitle string) ([]string, error) {
 	// create source link
-	url := fmt.Sprintf("https://en.wikipedia.org/wiki/%s", strings.ReplaceAll(pageTitle, " ", "_"))
+	url := fmt.Sprintf("https://en.wikipedia.org/wiki/%s", pageTitle)
 
 	// Fetch Page
 	resp, err := http.Get(url)
@@ -58,9 +59,10 @@ func scrapeWikipediaLinksGoquery(pageTitle string) ([]string, error) {
 	return wikiTitles, nil
 }
 
+/* ASUMSI pageTitle sudah benar tanpa spaci */
 func scrapeWikipediaLinksGocolly(pageTitle string) ([]string, error) {
 	// create source link
-	url := fmt.Sprintf("https://en.wikipedia.org/wiki/%s", strings.ReplaceAll(pageTitle, " ", "_"))
+	url := fmt.Sprintf("https://en.wikipedia.org/wiki/%s", pageTitle)
 
 	// Initialize a new Colly collector
 	c := colly.NewCollector()
