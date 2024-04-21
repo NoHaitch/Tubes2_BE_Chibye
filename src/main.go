@@ -31,12 +31,12 @@ func main() {
 	})
 
 	r.GET("/search", func(c *gin.Context) {
-		start := c.Query("start")
+		source := c.Query("source")
 		target := c.Query("target")
 
-		log.Printf("Starting IDS start=%s target=%s", start, target)
+		log.Printf("Starting IDS start=%s target=%s", source, target)
 
-		result, found, timeTakken := idsStart(start, target, 4, time.Now())
+		result, found, timeTakken, pageVisited := idsStart(source, target, 4, time.Now())
 
 		if !found {
 			log.Println("Search Failed")
@@ -45,8 +45,9 @@ func main() {
 		// Result is the path
 		// TimeTakken is time of search in milisecond
 		c.JSON(http.StatusOK, gin.H{
-			"results":    result,
-			"timeTakken": timeTakken,
+			"results":     result,
+			"timeTakken":  timeTakken,
+			"pageVisited": pageVisited,
 		})
 	})
 

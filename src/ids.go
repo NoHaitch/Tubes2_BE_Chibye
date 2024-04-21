@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"time"
 )
 
-func ids(srcTitle string, targetTitle string, limit int, currPath []string) ([]string, bool) {
-	if srcTitle == targetTitle {
+func ids(source string, target string, limit int, maxDepth int, currPath []string, pageVisitedPtr *int) ([]string, bool) {
+	// log.Printf("current Page: %s\n", source)
+	if source == target {
 		return currPath, true
 	}
 
@@ -14,13 +15,16 @@ func ids(srcTitle string, targetTitle string, limit int, currPath []string) ([]s
 		return nil, false
 	}
 
-	wikiTitles, err := scrapeWikipediaLinksGocolly(srcTitle)
+	(*pageVisitedPtr)++
+	wikiTitles, err := scrapeWikipediaLinksGocolly(source)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// search for target
 	for i := range wikiTitles {
+
+		// Stop link looping
 		seen := false
 		for _, link := range currPath {
 			if wikiTitles[i] == link {
@@ -34,7 +38,7 @@ func ids(srcTitle string, targetTitle string, limit int, currPath []string) ([]s
 		}
 
 		newPath := append(currPath, wikiTitles[i])
-		resultPath, found := ids(wikiTitles[i], targetTitle, limit-1, newPath)
+		resultPath, found := ids(wikiTitles[i], target, limit-1, maxDepth, newPath, pageVisitedPtr)
 		if found {
 			return resultPath, true
 		}
@@ -43,17 +47,13 @@ func ids(srcTitle string, targetTitle string, limit int, currPath []string) ([]s
 	return nil, false
 }
 
-func idsStart(srcTitle string, targetTitle string, maxDepth int) bool {
+func idsStart(source string, target string, maxDepth int, startTime time.Time) ([]string, bool, int, int) {
+	pageVisited := 0
 	for limit := 0; limit <= maxDepth; limit++ {
-		path, found := ids(srcTitle, targetTitle, limit, nil)
+		path, found := ids(source, target, limit, maxDepth, []string{source}, &pageVisited)
 		if found {
-			fmt.Println("Wikipedia Links:")
-			fmt.Printf(" 1. %s\n", srcTitle)
-			for i, title := range path {
-				fmt.Printf(" %d. %s \n", i+2, title)
-			}
-			return true
+			return path, true, int(time.Since(startTime).Milliseconds()), pageVisited
 		}
 	}
-	return false
+	return nil, false, int(time.Since(startTime).Milliseconds()), pageVisited
 }
