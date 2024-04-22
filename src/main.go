@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+	go resetRequestCounter()
 	printlnYellow("[Main] Wikipedia Search API Starting...")
 
 	port := os.Getenv("PORT")

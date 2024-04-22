@@ -3,12 +3,12 @@ module example/src
 go 1.22.1
 
 require (
-	github.com/PuerkitoBio/goquery v1.9.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/gocolly/colly v1.2.0
 )
 
 require (
+	github.com/PuerkitoBio/goquery v1.9.1 // indirect
 	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/antchfx/htmlquery v1.3.1 // indirect
 	github.com/antchfx/xmlquery v1.4.0 // indirect
