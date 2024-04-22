@@ -2,8 +2,7 @@ package scrape
 
 import (
 	"fmt"
-	"runtime"
-	"scraping/path"
+	"os"
 	"scraping/queue"
 	"scraping/solution"
 	"scraping/visit"
@@ -12,6 +11,10 @@ import (
 	"time"
 
 	"github.com/gocolly/colly/v2"
+)
+
+var (
+	BfsCacheDir = "./cache"
 )
 
 // Visit the page and scrape all the body.
@@ -81,67 +84,46 @@ func ProcessPage(node *queue.Vertice, line *queue.ListVertice, visited *visit.Vi
 	}
 }
 
-// Search the nearest path to the destination link from start link using BFS algorithm.
-func BFS(url_init, url_end string) *solution.Solutions {
-	// initiate the queue
-	layer := []queue.ListVertice{}
+// Visit the page and scrape all the body.
+// Parsing the body and select the link that contains "/wiki/" prefix and non important articles.
+// Cache the page into BfsCacheDir, which will be deleted when the ids search finished
+func ExtractPageIDS(url string) []string {
 
-	runtime.GOMAXPROCS(11)
+	c := colly.NewCollector(
+		colly.AllowedDomains("en.wikipedia.org"),
+		colly.CacheDir(BfsCacheDir),
+	)
 
-	init := url_init
-	last := url_end
+	c.AllowURLRevisit = true
 
-	// initiate the solution
-	solution := solution.New()
+	// List of links
+	links := []string{}
 
-	depth := 0
-	// initiate the layer
-	layer = append(layer, *queue.NewListVertice())
-	layer[depth].Add(queue.Vertice{Url: init, Path: path.New()})
+	// Get href links
+	c.OnHTML("#mw-content-text a[href]", func(e *colly.HTMLElement) {
+		href := e.Attr("href")
 
-	maxProcs := 200
+		// Only get Wikipedia links, ignore .jpg links, ignore Wikipedia template
+		if strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") &&
+			!strings.HasPrefix(href, "/wiki/Template:") && !strings.HasPrefix(href, "/wiki/Help:") &&
+			!strings.HasPrefix(href, "/wiki/Special:") && !strings.HasPrefix(href, "/wiki/Template_talk:") &&
+			!strings.HasPrefix(href, "/wiki/Category:") && !strings.HasPrefix(href, "/wiki/Wikipedia:") {
 
-	counter := make(chan int, maxProcs-1)
-
-	cc := 0
-
-	var wg sync.WaitGroup
-
-	visited := visit.New()
-
-	visited.SetVisited(url_init, true)
-
-	for {
-		iter := layer[depth].Len()
-		nodes := layer[depth].GetListVertice()
-		layer = append(layer, *queue.NewListVertice())
-		fmt.Println("Layer:", depth)
-		for i := 0; i < iter; i++ {
-			if !solution.IsFound() {
-				cc++
-				wg.Add(1)
-				go ProcessPage(&nodes[i], &layer[depth+1], visited, solution, last, &wg, counter)
-			} else {
-				wg.Wait()
-				close(counter)
-				break
-			}
-			if (i+1)%maxProcs == 0 || i+1 == iter {
-				wg.Wait()
-				close(counter)
-				counter = make(chan int, maxProcs-1)
-			}
+			links = append(links, href)
 		}
-		depth++
-		wg.Wait()
-		if solution.IsFound() {
-			break
-		}
+	})
+
+	// Visit the URL
+	err := c.Visit("https://en.wikipedia.org" + url)
+	if err != nil {
+		fmt.Println("Error to visit URL: " + url)
+		return nil
 	}
 
-	wg.Wait()
+	return links
+}
 
-	solution.Visited = cc
-
-	return solution
+// Remove Cache used by IDS search
+func ClearCache() {
+	os.RemoveAll(BfsCacheDir)
 }

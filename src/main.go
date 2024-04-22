@@ -4,40 +4,44 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"time"
+
+	"scraping/scrape"
+	"scraping/search"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	go resetRequestCounter()
-	printlnYellow("[Main] Wikipedia Search API Starting...")
+	// Clear Cache
+	scrape.ClearCache()
+	go search.ResetRequestCounter() // Belum handle ngeberentikan counternya
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	// Starting API
+	PrintlnYellow("[Main] Wikipedia Search API Starting...")
+	port := "8080"
 
 	// gin instance
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
-	// Define handlers
+	// Test Endpoint
 	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "Hello World!")
-	})
-	r.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
+		c.String(http.StatusOK, "API ready to use!")
 	})
 
-	r.GET("/search", func(c *gin.Context) {
+	// IDS Endpoint
+	r.GET("/ids", func(c *gin.Context) {
 		source := c.Query("source")
 		target := c.Query("target")
 
 		log.Printf("Starting IDS start=%s target=%s", source, target)
+		url_init := "/wiki/" + source
+		url_end := "/wiki/" + target
 
-		result, found, timeTakken, pageVisited := idsStart(source, target, 4, time.Now())
+		startTime := time.Now()
+		result, found, pageVisited := search.IdsStart(url_init, url_end, 5)
+		endTime := time.Since(startTime)
 
 		if !found {
 			log.Println("Search Failed")
@@ -47,44 +51,49 @@ func main() {
 		// TimeTakken is time of search in milisecond
 		c.JSON(http.StatusOK, gin.H{
 			"results":     result,
-			"timeTakken":  timeTakken,
+			"timeTakken":  endTime.Milliseconds(),
 			"pageVisited": pageVisited,
 		})
 	})
 
-	printlnYellow("[Main] API started")
+	// BFS Endpoint
+	r.GET("/bfs", func(c *gin.Context) {
+		source := c.Query("source")
+		target := c.Query("target")
+
+		log.Printf("Starting BFS start=%s target=%s", source, target)
+		url_init := "/wiki/" + source
+		url_end := "/wiki/" + target
+
+		startTime := time.Now()
+		solutionsPtr := search.BFS(url_init, url_end)
+		endTime := time.Since(startTime)
+
+		// Result is the path
+		// TimeTakken is time of search in milisecond
+		c.JSON(http.StatusOK, gin.H{
+			"results":    solutionsPtr.GetPaths(),
+			"timeTakken": endTime.Milliseconds(),
+		})
+	})
+
+	PrintlnYellow("[Main] API started")
 	log.Printf("Listening on port %s", port)
 	r.Run(":" + port)
 
-	defer printlnYellow("[Main] API Terminated...")
-
-	// pageTitleStart := "lion"
-	// pageTitleEnd := "hen"
-	// maxDepth := 3
-
-	// startTime := time.Now()
-
-	// if idsStart(pageTitleStart, pageTitleEnd, maxDepth) {
-	// 	fmt.Println("FOUND")
-	// } else {
-	// 	fmt.Println("NOT FOUND")
-	// }
-
-	// elapsedTime := time.Since(startTime)
-	// fmt.Printf("Execution Time: %f seconds\n", elapsedTime.Seconds())
-
+	defer PrintlnYellow("[Main] API Terminated...")
 }
 
-func startYellow() {
+func StartYellow() {
 	fmt.Print("\x1b[33m")
 }
 
-func resetColor() {
+func ResetColor() {
 	fmt.Print("\x1b[0m")
 }
 
-func printlnYellow(text string) {
-	startYellow()
+func PrintlnYellow(text string) {
+	StartYellow()
 	fmt.Println(text)
-	resetColor()
+	ResetColor()
 }
