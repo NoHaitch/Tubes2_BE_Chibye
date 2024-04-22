@@ -1,1 +1,1 @@
-go run main.go ids.go scrapper.go
+go run main.go ids.go
