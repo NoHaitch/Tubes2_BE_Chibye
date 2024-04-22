@@ -1,6 +1,7 @@
 package search
 
 import (
+	"fmt"
 	"log"
 	"scraping/scrape"
 	"scraping/visit"
@@ -11,7 +12,6 @@ import (
 var (
 	max_request_per_second = 180
 	RequestCounter         int
-	stopRequestCounter     bool
 	counterMutex           sync.Mutex
 )
 
@@ -78,13 +78,19 @@ func Ids(source string, target string, limit int, currPath []string, visitCounte
 	return nil, false
 }
 
-func ResetRequestCounter() {
+func ResetRequestCounter(stop chan struct{}) {
 	for {
-		counterMutex.Lock()
-		RequestCounter = 0
-		counterMutex.Unlock()
+		select {
+		case <-stop:
+			return
+		default:
+			counterMutex.Lock()
+			fmt.Println("Counter: ", RequestCounter)
+			RequestCounter = 0
+			counterMutex.Unlock()
 
-		time.Sleep(time.Second)
+			time.Sleep(time.Second)
+		}
 	}
 }
 

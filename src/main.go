@@ -15,7 +15,6 @@ import (
 func main() {
 	// Clear Cache
 	scrape.ClearCache()
-	go search.ResetRequestCounter() // Belum handle ngeberentikan counternya
 
 	// Starting API
 	PrintlnYellow("[Main] Wikipedia Search API Starting...")
@@ -40,6 +39,12 @@ func main() {
 		url_end := "/wiki/" + target
 
 		startTime := time.Now()
+
+		stopCounter := make(chan struct{})
+		defer close(stopCounter)
+
+		go search.ResetRequestCounter(stopCounter)
+
 		result, found, pageVisited := search.IdsStart(url_init, url_end, 5)
 		endTime := time.Since(startTime)
 
@@ -54,6 +59,9 @@ func main() {
 			"timeTakken":  endTime.Milliseconds(),
 			"pageVisited": pageVisited,
 		})
+
+		// Stop the request counter goroutine after IDS search is finished
+		stopCounter <- struct{}{}
 	})
 
 	// BFS Endpoint
