@@ -38,15 +38,19 @@ func main() {
 		url_init := "/wiki/" + source
 		url_end := "/wiki/" + target
 
-		startTime := time.Now()
-
+		// Request Bucket Cycle
 		stopCounter := make(chan struct{})
 		defer close(stopCounter)
-
 		go search.ResetRequestCounter(stopCounter)
 
+		scrape.ClearCache()
+
+		// IDS search
+		startTime := time.Now()
 		result, found, pageVisited := search.IdsStart(url_init, url_end, 5)
 		endTime := time.Since(startTime)
+
+		scrape.ClearCache()
 
 		if !found {
 			log.Println("Search Failed")
@@ -73,14 +77,18 @@ func main() {
 		url_init := "/wiki/" + source
 		url_end := "/wiki/" + target
 
+		// BFS Search
 		startTime := time.Now()
 		solutionsPtr := search.BFS(url_init, url_end)
 		endTime := time.Since(startTime)
 
+		resultReversed := solutionsPtr.GetPaths().GetNodes()
+		reverseStringSlice(resultReversed)
+
 		// Result is the path
 		// TimeTakken is time of search in milisecond
 		c.JSON(http.StatusOK, gin.H{
-			"results":    solutionsPtr.GetPaths(),
+			"results":    resultReversed,
 			"timeTakken": endTime.Milliseconds(),
 		})
 	})
@@ -92,6 +100,14 @@ func main() {
 	defer PrintlnYellow("[Main] API Terminated...")
 }
 
+func reverseStringSlice(slice []string) {
+	length := len(slice)
+	for i := 0; i < length/2; i++ {
+		slice[i], slice[length-i-1] = slice[length-i-1], slice[i]
+	}
+}
+
+// Print Color Functions
 func StartYellow() {
 	fmt.Print("\x1b[33m")
 }
