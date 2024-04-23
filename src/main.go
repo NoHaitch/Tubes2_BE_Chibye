@@ -13,8 +13,6 @@ import (
 )
 
 func main() {
-	// Clear Cache
-	scrape.ClearCache()
 
 	// Starting API
 	PrintlnYellow("[Main] Wikipedia Search API Starting...")
@@ -48,6 +46,7 @@ func main() {
 		// IDS search
 		startTime := time.Now()
 		result, found, pageVisited := search.IdsStart(url_init, url_end, 5)
+		result[len(result)-1] = target
 		endTime := time.Since(startTime)
 
 		scrape.ClearCache()
