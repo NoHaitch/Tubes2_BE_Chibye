@@ -13,8 +13,6 @@ import (
 )
 
 func main() {
-	// Clear Cache
-	scrape.ClearCache()
 
 	// Starting API
 	PrintlnYellow("[Main] Wikipedia Search API Starting...")
@@ -38,26 +36,34 @@ func main() {
 		url_init := "/wiki/" + source
 		url_end := "/wiki/" + target
 
-		startTime := time.Now()
-
+		// Request Bucket Cycle
 		stopCounter := make(chan struct{})
 		defer close(stopCounter)
-
 		go search.ResetRequestCounter(stopCounter)
 
+		scrape.ClearCache()
+
+		// IDS search
+		startTime := time.Now()
 		result, found, pageVisited := search.IdsStart(url_init, url_end, 5)
+		result[len(result)-1] = target
 		endTime := time.Since(startTime)
+
+		scrape.ClearCache()
 
 		if !found {
 			log.Println("Search Failed")
 		}
 
 		// Result is the path
-		// TimeTakken is time of search in milisecond
+		// time takken is time of search in millisecond
+		// page checked is the amount of page that is checked
+		// hops is the amount of travel from the source to the target
 		c.JSON(http.StatusOK, gin.H{
 			"results":     result,
 			"timeTakken":  endTime.Milliseconds(),
-			"pageVisited": pageVisited,
+			"pageChecked": pageVisited,
+			"hops: ":      len(result) - 1,
 		})
 
 		// Stop the request counter goroutine after IDS search is finished
@@ -73,16 +79,23 @@ func main() {
 		url_init := "/wiki/" + source
 		url_end := "/wiki/" + target
 
+		// BFS Search
 		startTime := time.Now()
 		solutionsPtr := search.BFS(url_init, url_end)
 		endTime := time.Since(startTime)
 
+		resultReversed := solutionsPtr.GetPaths().GetNodes()
+		reverseStringSlice(resultReversed)
+
 		// Result is the path
-		// TimeTakken is time of search in milisecond
+		// time takken is time of search in millisecond
+		// page checked is the amount of page that is checked
+		// hops is the amount of travel from the source to the target
 		c.JSON(http.StatusOK, gin.H{
-			"results":     solutionsPtr.GetPaths(),
+			"results":     resultReversed,
 			"timeTakken":  endTime.Milliseconds(),
-			"pageVisited": solutionsPtr.Visited,
+			"pageChecked": solutionsPtr.Visited,
+			"hops: ":      len(resultReversed) - 1,
 		})
 	})
 
@@ -93,6 +106,14 @@ func main() {
 	defer PrintlnYellow("[Main] API Terminated...")
 }
 
+func reverseStringSlice(slice []string) {
+	length := len(slice)
+	for i := 0; i < length/2; i++ {
+		slice[i], slice[length-i-1] = slice[length-i-1], slice[i]
+	}
+}
+
+// Print Color Functions
 func StartYellow() {
 	fmt.Print("\x1b[33m")
 }

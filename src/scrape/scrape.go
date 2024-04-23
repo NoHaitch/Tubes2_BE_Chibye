@@ -91,7 +91,7 @@ func ProcessPage(node *queue.Vertice, line *queue.ListVertice, visited *visit.Vi
 // Visit the page and scrape all the body.
 // Parsing the body and select the link that contains "/wiki/" prefix and non important articles.
 // Cache the page into BfsCacheDir, which will be deleted when the ids search finished
-func ExtractPageIDS(url string) []string {
+func ExtractPageIDS(url string, try int) []string {
 
 	c := colly.NewCollector(
 		colly.AllowedDomains("en.wikipedia.org"),
@@ -121,7 +121,12 @@ func ExtractPageIDS(url string) []string {
 	err := c.Visit("https://en.wikipedia.org" + url)
 	if err != nil {
 		fmt.Println("Error to visit URL: " + url)
-		return nil
+		if try > 1 {
+			return nil
+		} else {
+			time.Sleep(time.Millisecond)
+			return ExtractPageIDS(url, try+1)
+		}
 	}
 
 	return links
