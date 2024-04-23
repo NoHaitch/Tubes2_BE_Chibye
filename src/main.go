@@ -80,8 +80,9 @@ func main() {
 		// Result is the path
 		// TimeTakken is time of search in milisecond
 		c.JSON(http.StatusOK, gin.H{
-			"results":    solutionsPtr.GetPaths(),
-			"timeTakken": endTime.Milliseconds(),
+			"results":     solutionsPtr.GetPaths(),
+			"timeTakken":  endTime.Milliseconds(),
+			"pageVisited": solutionsPtr.Visited,
 		})
 	})
 

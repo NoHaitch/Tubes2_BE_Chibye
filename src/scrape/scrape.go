@@ -35,7 +35,11 @@ func ExtractPage(visited *visit.Visited, localVisited *visit.Visited, url string
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		link := e.Attr("href")
 		// Collect links with href attribute starting with "/wiki/"
-		if strings.HasPrefix(link, "/wiki/") {
+		if strings.HasPrefix(link, "/wiki/") && !strings.HasPrefix(link, "/wiki/File:") &&
+			!strings.HasPrefix(link, "/wiki/Template:") && !strings.HasPrefix(link, "/wiki/Help:") &&
+			!strings.HasPrefix(link, "/wiki/Special:") && !strings.HasPrefix(link, "/wiki/Template_talk:") &&
+			!strings.HasPrefix(link, "/wiki/Category:") && !strings.HasPrefix(link, "/wiki/Wikipedia:") {
+
 			// Mark the link as visited
 			if !visited.Check(link) {
 				links = append(links, link)

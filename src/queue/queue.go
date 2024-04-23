@@ -1,7 +1,7 @@
 package queue
 
 import (
-	"container/list"
+	// "container/list"
 	"scraping/path"
 	"sync"
 )
@@ -58,63 +58,63 @@ func (l *ListVertice) Len() int {
 	return l.length
 }
 
-type Queue struct {
-	sync.Mutex
-	list      *list.List
-	currLevel int
-}
+// type Queue struct {
+// 	sync.Mutex
+// 	list      *list.List
+// 	currLevel int
+// }
 
-func (q *Queue) Init() *Queue {
-	q.list = list.New()
-	q.currLevel = 0
-	return q
-}
+// func (q *Queue) Init() *Queue {
+// 	q.list = list.New()
+// 	q.currLevel = 0
+// 	return q
+// }
 
-func New() *Queue {
-	return new(Queue).Init()
-}
+// func New() *Queue {
+// 	return new(Queue).Init()
+// }
 
-func (q *Queue) IsEmpty() bool {
-	q.Lock()
-	defer q.Unlock()
-	return q.list.Len() == 0
-}
+// func (q *Queue) IsEmpty() bool {
+// 	q.Lock()
+// 	defer q.Unlock()
+// 	return q.list.Len() == 0
+// }
 
-func (q *Queue) Enqueue(link Vertice) {
-	q.Lock()
-	defer q.Unlock()
-	q.list.PushBack(link)
-}
+// func (q *Queue) Enqueue(link Vertice) {
+// 	q.Lock()
+// 	defer q.Unlock()
+// 	q.list.PushBack(link)
+// }
 
-func (q *Queue) Dequeue() Vertice {
-	q.Lock()
-	defer q.Unlock()
-	front := q.list.Front()
-	if front == nil {
-		return Vertice{}
-	}
-	q.list.Remove(front)
-	return front.Value.(Vertice)
-}
+// func (q *Queue) Dequeue() Vertice {
+// 	q.Lock()
+// 	defer q.Unlock()
+// 	front := q.list.Front()
+// 	if front == nil {
+// 		return Vertice{}
+// 	}
+// 	q.list.Remove(front)
+// 	return front.Value.(Vertice)
+// }
 
-func (q *Queue) Front() Vertice {
-	q.Lock()
-	defer q.Unlock()
-	return q.list.Front().Value.(Vertice)
-}
+// func (q *Queue) Front() Vertice {
+// 	q.Lock()
+// 	defer q.Unlock()
+// 	return q.list.Front().Value.(Vertice)
+// }
 
-func (q *Queue) GetCurrentLevel() int {
-	q.Lock()
-	defer q.Unlock()
-	return q.currLevel
-}
+// func (q *Queue) GetCurrentLevel() int {
+// 	q.Lock()
+// 	defer q.Unlock()
+// 	return q.currLevel
+// }
 
-func (q *Queue) SetCurrentLevel(newLevel int) {
-	q.Lock()
-	defer q.Unlock()
-	q.currLevel = newLevel
-}
+// func (q *Queue) SetCurrentLevel(newLevel int) {
+// 	q.Lock()
+// 	defer q.Unlock()
+// 	q.currLevel = newLevel
+// }
 
-func (q *Queue) Len() int {
-	return q.list.Len()
-}
+// func (q *Queue) Len() int {
+// 	return q.list.Len()
+// }
