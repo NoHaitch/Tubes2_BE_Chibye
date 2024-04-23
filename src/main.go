@@ -57,11 +57,14 @@ func main() {
 		}
 
 		// Result is the path
-		// TimeTakken is time of search in milisecond
+		// time takken is time of search in millisecond
+		// page checked is the amount of page that is checked
+		// hops is the amount of travel from the source to the target
 		c.JSON(http.StatusOK, gin.H{
 			"results":     result,
 			"timeTakken":  endTime.Milliseconds(),
-			"pageVisited": pageVisited,
+			"pageChecked": pageVisited,
+			"hops: ":      len(result) - 1,
 		})
 
 		// Stop the request counter goroutine after IDS search is finished
@@ -86,10 +89,14 @@ func main() {
 		reverseStringSlice(resultReversed)
 
 		// Result is the path
-		// TimeTakken is time of search in milisecond
+		// time takken is time of search in millisecond
+		// page checked is the amount of page that is checked
+		// hops is the amount of travel from the source to the target
 		c.JSON(http.StatusOK, gin.H{
-			"results":    resultReversed,
-			"timeTakken": endTime.Milliseconds(),
+			"results":     resultReversed,
+			"timeTakken":  endTime.Milliseconds(),
+			"pageChecked": solutionsPtr.Visited,
+			"hops: ":      len(resultReversed) - 1,
 		})
 	})
 
