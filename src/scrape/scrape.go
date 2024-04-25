@@ -120,7 +120,6 @@ func ExtractPageIDS(url string, try int) []string {
 	// Visit the URL
 	err := c.Visit("https://en.wikipedia.org" + url)
 	if err != nil {
-		fmt.Println("Error to visit URL: " + url)
 		if try > 1 {
 			return nil
 		} else {
