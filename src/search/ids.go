@@ -9,7 +9,8 @@ import (
 )
 
 var (
-	tokenBucket = make(chan struct{}, 1000)
+	maxRequestPerSecond = 1000
+	tokenBucket         = make(chan struct{}, maxRequestPerSecond)
 )
 
 // Start IDS Search
@@ -59,7 +60,7 @@ func Ids(source string, target string, limit int, currPath []string, visitCounte
 	select {
 	case tokenBucket <- struct{}{}:
 	default:
-		time.Sleep(time.Millisecond)
+		time.Sleep(time.Millisecond * 100)
 		Ids(source, target, limit, currPath, visitCounter, cachePage, path)
 		<-tokenBucket // Release token
 		return
@@ -114,7 +115,9 @@ func ResetRequestCounter(stop chan struct{}) {
 		case <-stop:
 			return
 		default:
+			// Debugging
 			fmt.Println("counter: ", len(tokenBucket))
+
 			for len(tokenBucket) > 0 {
 				<-tokenBucket
 			}
