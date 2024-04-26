@@ -149,7 +149,7 @@ func main() {
 
 	PrintlnYellow("[Main] API started")
 	log.Printf("Listening on port %s", port)
-	r.Run("localhost:" + port)
+	r.Run("0.0.0.0:" + port)
 
 	defer PrintlnYellow("[Main] API Terminated...")
 }
