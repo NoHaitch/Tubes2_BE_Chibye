@@ -122,7 +122,11 @@ How to install and use this project_
    ```sh
    cd src
    ```
-3. Run the API
+3. Get all dependencies
+   ```sh
+   go get
+   ```
+4. Run the API
    ```sh
    go run .
    ``` 

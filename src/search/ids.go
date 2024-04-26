@@ -12,16 +12,15 @@ var (
 )
 
 // Start IDS Search
-func IdsStart(url_start string, url_end string, maxDepth int) ([]string, bool, int) {
+func IDS(url_start string, url_end string, maxDepth int) ([]string, bool, int) {
 	pageVisited := 0
 
 	path := []string{}
 
 	// IDS recursive for every depth
 	for limit := 0; limit <= maxDepth; limit++ {
-
 		fmt.Println("Depth:", limit)
-		Ids(url_start, url_end, limit, []string{url_start}, &pageVisited, &path)
+		DLS(url_start, url_end, limit, []string{url_start}, &pageVisited, &path)
 
 		// if a solution is found, stop checking
 		if len(path) != 0 {
@@ -35,8 +34,8 @@ func IdsStart(url_start string, url_end string, maxDepth int) ([]string, bool, i
 	return nil, false, pageVisited
 }
 
-// IDS Recursion with Worker Pool
-func Ids(source string, target string, limit int, currPath []string, visitCounter *int, path *[]string) {
+// DLS Recursion with Worker Pool
+func DLS(source string, target string, limit int, currPath []string, visitCounter *int, path *[]string) {
 
 	// A solution is already found
 	if len(*path) != 0 {
@@ -60,7 +59,7 @@ func Ids(source string, target string, limit int, currPath []string, visitCounte
 	case tokenBucket <- struct{}{}:
 	default:
 		time.Sleep(time.Millisecond * 100)
-		Ids(source, target, limit, currPath, visitCounter, path)
+		DLS(source, target, limit, currPath, visitCounter, path)
 		<-tokenBucket // Release token
 		return
 	}
@@ -92,7 +91,7 @@ func Ids(source string, target string, limit int, currPath []string, visitCounte
 			defer func() { results <- struct{}{} }()
 			for _, title := range titles {
 				// ids recursion
-				Ids(title, target, limit-1, append(currPath, title), visitCounter, path)
+				DLS(title, target, limit-1, append(currPath, title), visitCounter, path)
 			}
 		}(wikiTitles[start:end])
 	}
