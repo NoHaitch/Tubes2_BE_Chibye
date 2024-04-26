@@ -17,6 +17,35 @@ var (
 	BfsCacheDir = "./cache"
 )
 
+var bannedLink map[string]bool
+
+// Initialize the banned links
+func InitializeBannedLink() {
+	bannedLink = make(map[string]bool)
+	bannedLink["/wiki/File"] = true
+	bannedLink["/wiki/Template"] = true
+	bannedLink["/wiki/Help"] = true
+	bannedLink["/wiki/Special"] = true
+	bannedLink["/wiki/Template_talk"] = true
+	bannedLink["/wiki/Category"] = true
+	bannedLink["/wiki/Wikipedia"] = true
+}
+
+func parseLink(url string) string {
+	idx := strings.Index(url, ":")
+	if idx == -1 {
+		return url
+	}
+	return url[:idx]
+}
+
+func PrintBannedLink() {
+	fmt.Println("Banned Links:")
+	for k := range bannedLink {
+		fmt.Println(k)
+	}
+}
+
 // Visit the page and scrape all the body.
 // Parsing the body and select the link that contains "/wiki/" prefix.
 // Check the link in the visited map.
@@ -35,11 +64,7 @@ func ExtractPage(visited *visit.Visited, localVisited *visit.Visited, url string
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		link := e.Attr("href")
 		// Collect links with href attribute starting with "/wiki/"
-		if strings.HasPrefix(link, "/wiki/") && !strings.HasPrefix(link, "/wiki/File:") &&
-			!strings.HasPrefix(link, "/wiki/Template:") && !strings.HasPrefix(link, "/wiki/Help:") &&
-			!strings.HasPrefix(link, "/wiki/Special:") && !strings.HasPrefix(link, "/wiki/Template_talk:") &&
-			!strings.HasPrefix(link, "/wiki/Category:") && !strings.HasPrefix(link, "/wiki/Wikipedia:") {
-
+		if _, exists := bannedLink[parseLink(link)]; !exists && strings.HasPrefix(link, "/wiki/") {
 			// Mark the link as visited
 			if !visited.Check(link) {
 				links = append(links, link)
@@ -108,10 +133,7 @@ func ExtractPageIDS(url string, try int) []string {
 		href := e.Attr("href")
 
 		// Only get Wikipedia links, ignore .jpg links, ignore Wikipedia template
-		if strings.HasPrefix(href, "/wiki/") && !strings.HasPrefix(href, "/wiki/File:") &&
-			!strings.HasPrefix(href, "/wiki/Template:") && !strings.HasPrefix(href, "/wiki/Help:") &&
-			!strings.HasPrefix(href, "/wiki/Special:") && !strings.HasPrefix(href, "/wiki/Template_talk:") &&
-			!strings.HasPrefix(href, "/wiki/Category:") && !strings.HasPrefix(href, "/wiki/Wikipedia:") {
+		if _, exists := bannedLink[parseLink(href)]; !exists && strings.HasPrefix(href, "/wiki/") {
 
 			links = append(links, href)
 		}

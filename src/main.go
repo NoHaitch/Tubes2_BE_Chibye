@@ -7,8 +7,10 @@ import (
 	"strings"
 	"time"
 
+	"scraping/scrape"
 	"scraping/search"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,9 +24,16 @@ func main() {
 	PrintlnYellow("[Main] Wikipedia Search API Starting...")
 	port := "8080"
 
+	//Initialize the banned link
+	scrape.InitializeBannedLink()
+
 	// gin instance
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+	r.Use(cors.New(config))
 
 	// Test Endpoint
 	r.GET("/", func(c *gin.Context) {
@@ -104,7 +113,7 @@ func main() {
 			source = strings.Replace(source, " ", "_", -1)
 			target = strings.Replace(target, " ", "_", -1)
 
-			PrintlogGreen("Starting IDS start=" + source + " target=" + target)
+			PrintlogGreen("Starting BFS start=" + source + " target=" + target)
 
 			url_init := "/wiki/" + source
 			url_end := "/wiki/" + target
