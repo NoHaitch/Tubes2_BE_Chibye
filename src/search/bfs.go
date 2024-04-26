@@ -46,6 +46,9 @@ func BFS(url_init, url_end string) *solution.Solutions {
 		nodes := layer[depth].GetListVertice()
 		layer = append(layer, *queue.NewListVertice())
 		fmt.Println("Layer:", depth)
+		if iter <= 0 {
+			break
+		}
 		for i := 0; i < iter; i++ {
 			if !solution.IsFound() {
 				cc++
