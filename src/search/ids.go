@@ -12,7 +12,7 @@ var (
 )
 
 // Start IDS Search
-func IDS(url_start string, url_end string, maxDepth int) ([]string, bool, int) {
+func IDS(url_start string, url_end string, maxDepth int) ([]string, int) {
 	pageVisited := 0
 
 	path := []string{}
@@ -24,14 +24,14 @@ func IDS(url_start string, url_end string, maxDepth int) ([]string, bool, int) {
 
 		// if a solution is found, stop checking
 		if len(path) != 0 {
-			return path, true, pageVisited
+			return path, pageVisited
 		}
 
 		// reset page count for each limit
 		pageVisited = 0
 	}
 
-	return nil, false, pageVisited
+	return nil, pageVisited
 }
 
 // DLS Recursion with Worker Pool
