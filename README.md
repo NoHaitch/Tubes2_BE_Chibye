@@ -59,21 +59,10 @@
       <a href="#about-the-project">About The Project</a>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#getting-started-back-end">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
-        <li><a href="#instruction">Instruction</a></li>
-        <li>
-        <details>
-          <summary><a href="#features">Features</a></summary>
-          <ol>
-            <li><a href="#1-feature-x">Features - 1</a></li>
-            <li><a href="#2-feature-y">Features - 2</a></li>
-            <li><a href="#3-feature-z">Features - 3</a></li>
-          <ol>
-        </details>
-        </li>
       </ul>
     </li>
     <li><a href="#contributing">Contributing</a></li>
