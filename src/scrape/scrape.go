@@ -29,6 +29,7 @@ func InitializeBannedLink() {
 	bannedLink["/wiki/Template_talk"] = true
 	bannedLink["/wiki/Category"] = true
 	bannedLink["/wiki/Wikipedia"] = true
+	bannedLink["/wiki/Portal"] = true
 }
 
 func parseLink(url string) string {
