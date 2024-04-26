@@ -88,9 +88,9 @@ func main() {
 			// hops is the amount of travel from the source to the target
 			c.JSON(http.StatusOK, gin.H{
 				"results":     result,
-				"timeTakken":  endTime.Milliseconds(),
+				"timeTaken":   endTime.Milliseconds(),
 				"pageChecked": pageVisited,
-				"hops: ":      len(result) - 1,
+				"hops":        len(result) - 1,
 			})
 
 			// Stop the request counter goroutine after IDS search is finished
@@ -140,16 +140,16 @@ func main() {
 			// hops is the amount of travel from the source to the target
 			c.JSON(http.StatusOK, gin.H{
 				"results":     result,
-				"timeTakken":  endTime.Milliseconds(),
+				"timeTaken":   endTime.Milliseconds(),
 				"pageChecked": solutionsPtr.Visited,
-				"hops: ":      len(result) - 1,
+				"hops":        len(result) - 1,
 			})
 		}
 	})
 
 	PrintlnYellow("[Main] API started")
 	log.Printf("Listening on port %s", port)
-	r.Run(":" + port)
+	r.Run("localhost:" + port)
 
 	defer PrintlnYellow("[Main] API Terminated...")
 }
