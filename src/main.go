@@ -69,7 +69,7 @@ func main() {
 
 			// IDS search
 			startTime := time.Now()
-			result, found, pageVisited := search.IdsStart(url_init, url_end, 5)
+			result, found, pageVisited := search.IDS(url_init, url_end, 5)
 			result[len(result)-1] = "/wiki/" + target
 			endTime := time.Since(startTime)
 
