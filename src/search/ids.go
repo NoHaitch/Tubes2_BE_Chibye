@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	maxRequestPerSecond = 1000
+	maxRequestPerSecond = 200
 	tokenBucket         = make(chan struct{}, maxRequestPerSecond)
 )
 
