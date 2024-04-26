@@ -2,27 +2,26 @@ package search
 
 import (
 	"fmt"
-	"log"
 	"scraping/scrape"
-	"scraping/visit"
 	"time"
 )
 
 var (
-	tokenBucket = make(chan struct{}, 1000)
+	maxRequestPerSecond = 1000
+	tokenBucket         = make(chan struct{}, maxRequestPerSecond)
 )
 
 // Start IDS Search
 func IdsStart(url_start string, url_end string, maxDepth int) ([]string, bool, int) {
-	cachePage := visit.New()
 	pageVisited := 0
 
 	path := []string{}
 
 	// IDS recursive for every depth
 	for limit := 0; limit <= maxDepth; limit++ {
-		log.Println("Depth:", limit)
-		Ids(url_start, url_end, limit, []string{url_start}, &pageVisited, cachePage, &path)
+
+		fmt.Println("Depth:", limit)
+		Ids(url_start, url_end, limit, []string{url_start}, &pageVisited, &path)
 
 		// if a solution is found, stop checking
 		if len(path) != 0 {
@@ -37,7 +36,8 @@ func IdsStart(url_start string, url_end string, maxDepth int) ([]string, bool, i
 }
 
 // IDS Recursion with Worker Pool
-func Ids(source string, target string, limit int, currPath []string, visitCounter *int, cachePage *visit.Visited, path *[]string) {
+func Ids(source string, target string, limit int, currPath []string, visitCounter *int, path *[]string) {
+
 	// A solution is already found
 	if len(*path) != 0 {
 		return
@@ -59,15 +59,10 @@ func Ids(source string, target string, limit int, currPath []string, visitCounte
 	select {
 	case tokenBucket <- struct{}{}:
 	default:
-		time.Sleep(time.Millisecond)
-		Ids(source, target, limit, currPath, visitCounter, cachePage, path)
+		time.Sleep(time.Millisecond * 100)
+		Ids(source, target, limit, currPath, visitCounter, path)
 		<-tokenBucket // Release token
 		return
-	}
-
-	// add url to cache map
-	if !cachePage.IsVisited(source) {
-		cachePage.SetVisited(source, true)
 	}
 
 	(*visitCounter)++
@@ -80,7 +75,7 @@ func Ids(source string, target string, limit int, currPath []string, visitCounte
 	defer close(results)
 
 	// Number of workers
-	numWorkers := 15 + limit
+	numWorkers := 20 + (limit * 3)
 
 	// Calculate workload per worker
 	workload := len(wikiTitles) / numWorkers
@@ -97,7 +92,7 @@ func Ids(source string, target string, limit int, currPath []string, visitCounte
 			defer func() { results <- struct{}{} }()
 			for _, title := range titles {
 				// ids recursion
-				Ids(title, target, limit-1, append(currPath, title), visitCounter, cachePage, path)
+				Ids(title, target, limit-1, append(currPath, title), visitCounter, path)
 			}
 		}(wikiTitles[start:end])
 	}
@@ -114,7 +109,9 @@ func ResetRequestCounter(stop chan struct{}) {
 		case <-stop:
 			return
 		default:
-			fmt.Println("counter: ", len(tokenBucket))
+			// Debugging
+			// fmt.Println("counter: ", len(tokenBucket))
+
 			for len(tokenBucket) > 0 {
 				<-tokenBucket
 			}
