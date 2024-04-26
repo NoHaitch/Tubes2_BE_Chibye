@@ -7,7 +7,7 @@
   <h1 align="center">Tugas Besar 2 IF2211 Strategi Algoritma</h1>
 
   <p align="center">
-    <h3> Application Name - Back End</h3>
+    <h3> Back End</h3>
     <h4> Wikirace Solver using combination of BFS and IDS</h4>
     <h3><a href="https://github.com/NoHaitch/Tubes2_BE_Chibye">Front End</a> & <a href="https://github.com/NoHaitch/Tubes2_BE_Chibye">Back End</a></h3>
     <br/>
