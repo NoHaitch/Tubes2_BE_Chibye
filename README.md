@@ -92,80 +92,72 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-General Explanation about the project, Why you made this, What does it do exactly.  
+  For Tugas Besar 2, we are to make a solver for [Wikirace Game](https://en.wikipedia.org/wiki/Wikipedia:Wiki_Game). In summary, Wikirace is a game of finding the fastest way to get from a source Wikipedia page to a target page, where the number of links needed matters to the amount of time to reach the target page.
+
+To solve Wikirace, we use two search algorithms, BFS and IDS. For learning reasons, we are not to use Wikipedia API but instead need to web scrape all the links in a Wikipedia Page. This causes us many problems regarding limited requests to Wikipedia.
+
+Our Project is divided into a Front-end and a Back-end. Here are the links both repository:  
+- Front-end: https://github.com/NoHaitch/Tubes2_FE_Chibye 
+- Back-end: https://github.com/NoHaitch/Tubes2_BE_Chibye   
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- GETTING STARTED -->
-## Getting Started
+## Getting Started Back-end
 
 ### Prerequisites
 
 Project dependencies  
-example :  
 
-* Make 
-  ```sh
-  # in Linux
-  sudo apt install make
-  ```
-* Python
-  ```sh
-  # in Linux
-  sudo apt install python3
-  ```
+* Golang  
+  You can find how to install golang here: https://go.dev/doc/install 
+
+Golang library used:
+- [gocolly](https://go-colly.org/)
+- [gin](https://gin-gonic.com/)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Installation
 
-_How to install and use your project_
+How to install and use this project_
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/NoHaitch/Repository_Template
+   git clone https://github.com/NoHaitch/Tubes2_BE_Chibye
    ```
-2. Change the content
+2. Go to src Directory
+   ```sh
+   cd src
+   ```
+3. Run the API
+   ```sh
+   go run .
+   ``` 
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- INSTURCTION -->
-## Instruction
-Instruction to run/build/etc the program  
-example: 
-
-`make build` : To build from source to binary into bin/main  
-`make all` : Run binary directly after building   
-`make clean` : Remove all build generated files  
-`make ADT.test` : Running test for ADT test file, for example ( `make time.test` )  
-`make test.all` : Running all test  
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- FEATURES -->
 ## Features
 
-### 1. Feature X
+For Front-end this project uses React  
+For Web Framework this project uses Gin   
+For scrapping this project uses gocolly  
 
-this feature does X
+### 1. BFS Search
+Uses Breadth First Search algorithm to search wikipedia pages 
 
-### 2. Feature Y
+### 2. IDS Search
+Uses Iterative Deepening Search algorithm to search wikipedia pages 
 
-this feature does Y  
-sub-features:
-   1. function 1
-   2. function 2
-   3. function 3
-
-### 3. Feature Z
-
-this feature does Z
-- `A`: print A.  
-- `B`: print B.  
-- `C`: print C.
+### 3. Caching for IDS
+### 4. Concurent for BFS and IDS
+### 5. Deployment on Docker
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
