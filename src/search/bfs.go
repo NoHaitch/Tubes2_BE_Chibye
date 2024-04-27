@@ -29,7 +29,7 @@ func BFS(url_init, url_end string) *solution.Solutions {
 	layer = append(layer, *queue.NewListVertice())
 	layer[depth].Add(queue.Vertice{Url: init, Path: path.New()})
 
-	maxProcs := 50
+	maxProcs := 100
 
 	counter := make(chan int, maxProcs-1)
 
