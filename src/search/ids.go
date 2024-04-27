@@ -58,7 +58,7 @@ func DLS(source string, target string, limit int, currPath []string, visitCounte
 	select {
 	case tokenBucket <- struct{}{}:
 	default:
-		time.Sleep(time.Millisecond * 100)
+		time.Sleep(time.Second)
 		DLS(source, target, limit, currPath, visitCounter, path)
 		<-tokenBucket // Release token
 		return
