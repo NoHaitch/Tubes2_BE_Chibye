@@ -143,14 +143,16 @@ For Web Framework this project uses Gin
 For scrapping this project uses gocolly  
 
 ### 1. BFS Search
-Uses Breadth First Search algorithm to search wikipedia pages 
-
 ### 2. IDS Search
-Uses Iterative Deepening Search algorithm to search wikipedia pages 
-
-### 3. Caching for IDS
-### 4. Concurent for BFS and IDS
-### 5. Deployment on Docker
+### 3. Suggestion for Search Bar
+### 4. Validation for Title Input
+### 5. Resulting Search shown using graph
+### 6. Shows how many pages visited
+### 7. Shows time taken to find the solution
+### 8. Shows how many pages needed to reach the target
+### 9. Caching for IDS search
+### 10. Concurrency for IDS and BFS
+### 11. Docker support
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
