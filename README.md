@@ -112,7 +112,7 @@ Golang library used:
 
 ### Installation
 
-How to install and use this project_
+How to install and use this project (Without Docker)
 
 1. Clone the repo
    ```sh
@@ -130,6 +130,31 @@ How to install and use this project_
    ```sh
    go run .
    ``` 
+<br>
+
+How to install and use this project (With docker)
+1. Create New Folder as the Parent for FrontEnd and BackEnd folder. Let's say Tubes2_Chibye
+2. Clone the FrontEnd repository to the Tubes2_Chibye folder.
+   ```sh
+   git clone https://github.com/NoHaitch/Tubes2_FE_Chibye
+   ```
+3. Clone the BackEnd repository to the Tubes2_Chibye folder.
+   ```sh
+   git clone https://github.com/NoHaitch/Tubes2_BE_Chibye
+   ```
+4. Move the `docker-compose.yml` file in the FrontEnd folder, out to the Tubes2_Chibye folder so the file will be the same directory as the FrontEnd and BackEnd folder.
+5. Open your terminal at the Tubes2_Chibye directory, and then type this command.
+   ```sh
+   docker compose up --build
+   ```
+6. If you want to run the web app again and had done the fifth step, just type docker compose up without the build tag
+    ```sh
+    docker compose up
+    ```
+7. Now, the web app is running with the frontend and backend functionality. Visit `http://localhost:3000/` to open the WikiRace web app.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
