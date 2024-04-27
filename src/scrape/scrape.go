@@ -146,7 +146,7 @@ func ExtractPageIDS(url string, try int) []string {
 		if try > 1 {
 			return nil
 		} else {
-			time.Sleep(time.Millisecond)
+			time.Sleep(time.Millisecond * 10)
 			return ExtractPageIDS(url, try+1)
 		}
 	}
